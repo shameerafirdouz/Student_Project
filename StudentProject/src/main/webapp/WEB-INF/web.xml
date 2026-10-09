@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  web.xml — Minimal deployment descriptor.
+  Servlet registration is handled via @WebServlet annotation
+  in StudentServlet.java, so no servlet/mapping entries are
+  needed here. Keeping both would cause a deployment error.
+-->
+<web-app
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                        https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+    version="6.0">
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

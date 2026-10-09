@@ -1,0 +1,3 @@
+101|riya|CSE|87.5
+102|Rahul Kumar|CSE-DS|91.0
+105|Kiran|CSE|88.5

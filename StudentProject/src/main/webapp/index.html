@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="Student Record System — Manage, search, and track student records with ease.">
+
+    <title>Student Record System</title>
+
+    <!-- External CSS — no inline styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app-wrapper">
+
+    <!-- ======================================================
+         NAVBAR
+    ====================================================== -->
+    <nav class="navbar">
+        <div class="container navbar-inner">
+
+            <a href="#" class="logo">
+                <div class="logo-icon">🎓</div>
+                <div>
+                    <span class="logo-text">StudentDB</span>
+                    <span class="logo-sub">Record Management System</span>
+                </div>
+            </a>
+
+            <span class="nav-badge">v2.0</span>
+
+        </div>
+    </nav>
+
+
+    <!-- ======================================================
+         MAIN CONTENT
+    ====================================================== -->
+    <main class="container">
+
+        <!-- HERO + STATS -->
+        <section class="hero">
+
+            <h1 class="hero-title">
+                Student <span>Records</span>
+            </h1>
+            <p class="hero-subtitle">
+                Manage, search, and track student academic records in one place.
+            </p>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">👥</div>
+                    <div>
+                        <div class="stat-value" id="statTotal">—</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">📊</div>
+                    <div>
+                        <div class="stat-value" id="statAvg">—</div>
+                        <div class="stat-label">Average Marks</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">🏆</div>
+                    <div>
+                        <div class="stat-value" id="statTopper"
+                             style="font-size:18px; font-weight:700;">—</div>
+                        <div class="stat-label">Top Scorer</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- SEARCH + ACTIONS CARD -->
+        <div class="card">
+            <div class="card-header">
+
+                <div class="card-title">
+                    <div class="card-title-icon">🔍</div>
+                    Search &amp; Filter
+                </div>
+
+                <button
+                    id="addStudentBtn"
+                    class="btn btn-primary"
+                    onclick="openAddModal()">
+                    ➕ Add Student
+                </button>
+
+            </div>
+
+            <div class="search-bar">
+
+                <div class="search-input-wrap">
+                    <span class="search-icon">🔎</span>
+                    <input
+                        type="number"
+                        id="searchRoll"
+                        placeholder="Search by roll number…"
+                        min="1">
+                </div>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="searchStudent()">
+                    Search
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="document.getElementById('searchRoll').value=''; loadStudents();">
+                    Show All
+                </button>
+
+            </div>
+        </div>
+
+
+        <!-- STUDENT RECORDS TABLE CARD -->
+        <div class="card">
+
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-title-icon">📋</div>
+                    Student Records
+                </div>
+                <span class="record-count" id="recordCount">Loading…</span>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll No.</th>
+                            <th>Student Name</th>
+                            <th>Branch</th>
+                            <th>Marks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Populated by app.js -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ======================================================
+         FOOTER
+    ====================================================== -->
+    <footer>
+        <p>Student Record System &mdash; Built with Jakarta Servlet &amp; Vanilla JS</p>
+    </footer>
+
+</div><!-- /.app-wrapper -->
+
+
+<!-- ======================================================
+     ADD STUDENT MODAL
+====================================================== -->
+<div id="studentModal" class="modal-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="modalTitle">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">➕ Add New Student</h2>
+            <button
+                class="modal-close"
+                aria-label="Close"
+                onclick="closeModal('studentModal')">✕</button>
+        </div>
+
+        <form id="studentForm" novalidate>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label" for="rollNumber">Roll Number</label>
+                    <input
+                        type="number"
+                        id="rollNumber"
+                        class="form-input"
+                        placeholder="e.g. 101"
+                        min="1"
+                        required>
+                    <span class="form-hint">Must be a unique positive number</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="name">Student Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        class="form-input"
+                        placeholder="e.g. Rahul Kumar"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="branch">Branch</label>
+                    <input
+                        type="text"
+                        id="branch"
+                        class="form-input"
+                        placeholder="e.g. CSE, ECE, ME"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="marks">Marks (0–100)</label>
+                    <input
+                        type="number"
+                        id="marks"
+                        class="form-input"
+                        placeholder="e.g. 87.5"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        required>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeModal('studentModal')">
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="btn btn-primary">
+                    Add Student
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     EDIT STUDENT MODAL
+====================================================== -->
+<div id="editStudentModal" class="modal-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="editModalTitle">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2 class="modal-title" id="editModalTitle">✏️ Edit Student</h2>
+            <button
+                class="modal-close"
+                aria-label="Close"
+                onclick="closeModal('editStudentModal')">✕</button>
+        </div>
+
+        <form id="editStudentForm" novalidate>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label" for="editRollNumber">Roll Number (Cannot be changed)</label>
+                    <input
+                        type="number"
+                        id="editRollNumber"
+                        class="form-input"
+                        readonly
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editName">Student Name</label>
+                    <input
+                        type="text"
+                        id="editName"
+                        class="form-input"
+                        placeholder="e.g. Rahul Kumar"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editBranch">Branch</label>
+                    <input
+                        type="text"
+                        id="editBranch"
+                        class="form-input"
+                        placeholder="e.g. CSE, ECE, ME"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editMarks">Marks (0–100)</label>
+                    <input
+                        type="number"
+                        id="editMarks"
+                        class="form-input"
+                        placeholder="e.g. 87.5"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        required>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeModal('editStudentModal')">
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    id="editSubmitBtn"
+                    class="btn btn-primary">
+                    Update Student
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     DELETE CONFIRM MODAL
+====================================================== -->
+<div id="deleteModal" class="modal-overlay" role="dialog" aria-modal="true">
+
+    <div class="modal confirm-modal">
+
+        <div class="confirm-icon">🗑️</div>
+
+        <div class="confirm-text">
+            <h3>Delete Student?</h3>
+            <p>
+                You are about to permanently delete<br>
+                <strong id="deleteStudentName"></strong>
+            </p>
+            <p style="margin-top:8px; color: #ef4444; font-size:13px;">
+                This action cannot be undone.
+            </p>
+        </div>
+
+        <div class="form-actions" style="justify-content:center;">
+            <button
+                class="btn btn-secondary"
+                onclick="closeModal('deleteModal')">
+                Cancel
+            </button>
+            <button
+                id="confirmDeleteBtn"
+                class="btn btn-danger"
+                onclick="confirmDelete()">
+                Delete
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     TOAST CONTAINER
+====================================================== -->
+<div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+
+<!-- Single external JS — with cache busting query param -->
+<script src="js/app.js?v=2.0"></script>
+
+</body>
+</html>
